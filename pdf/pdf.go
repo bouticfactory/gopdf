@@ -36,6 +36,7 @@ const (
 type Document struct {
 	encoder
 	catalog *catalog
+	encoding *encoding
 	pages   []indirectObject
 	fonts   map[name]Reference
 }
@@ -43,6 +44,11 @@ type Document struct {
 // New creates a new document with no pages.
 func New() *Document {
 	doc := new(Document)
+	// doc.encoding = &encoding {
+	// 	Type: encodingType,
+	// 	BaseEncoding: "StandardEncoding",
+	// }
+	// doc.add(doc.encoding)
 	doc.catalog = &catalog{
 		Type: catalogType,
 	}
@@ -87,9 +93,10 @@ func (doc *Document) standardFont(fontName name) Reference {
 
 	// TODO: check name is standard?
 	ref := doc.add(standardFontDict{
-		Type:     fontType,
-		Subtype:  fontType1Subtype,
-		BaseFont: fontName,
+		Type:      fontType,
+		Subtype:   fontType1Subtype,
+		BaseFont:  fontName,
+		Encoding:  "MacRomanEncoding",
 	})
 	doc.fonts[fontName] = ref
 	return ref
@@ -134,6 +141,7 @@ func (doc *Document) Encode(w io.Writer) error {
 
 // PDF object types
 const (
+	encodingType name = "Encoding"
 	catalogType  name = "Catalog"
 	pageNodeType name = "Pages"
 	pageType     name = "Page"
@@ -151,6 +159,11 @@ const (
 type catalog struct {
 	Type  name
 	Pages Reference
+}
+
+type encoding struct {
+	Type          name
+	BaseEncoding  name
 }
 
 type pageRootNode struct {
@@ -224,7 +237,8 @@ const (
 )
 
 type standardFontDict struct {
-	Type     name
-	Subtype  name
-	BaseFont name
+	Type      name
+	Subtype   name
+	BaseFont  name
+	Encoding  name
 }

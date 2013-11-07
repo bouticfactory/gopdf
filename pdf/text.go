@@ -4,13 +4,13 @@ package pdf
 
 import (
 	"bytes"
+	"github.com/bouticfactory/encoding/macroman"
 )
 
 // Text is a PDF text object.  The zero value is an empty text object.
 type Text struct {
 	buf   bytes.Buffer
 	fonts map[name]bool
-
 	x, y        Unit
 	currFont    name
 	currSize    Unit
@@ -19,7 +19,9 @@ type Text struct {
 
 // Text adds a string to the text object.
 func (text *Text) Text(s string) {
-	writeCommand(&text.buf, "Tj", s)
+	res := make([]byte, len(s))
+	macroman.Encode(res, []byte(s)) 
+	writeCommand(&text.buf, "Tj", string(res))
 	if widths := getFontWidths(text.currFont); widths != nil {
 		text.x += computeStringWidth(s, widths, text.currSize)
 	}
