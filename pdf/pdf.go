@@ -44,11 +44,11 @@ type Document struct {
 // New creates a new document with no pages.
 func New() *Document {
 	doc := new(Document)
-	// doc.encoding = &encoding {
-	// 	Type: encodingType,
-	// 	BaseEncoding: "StandardEncoding",
-	// }
-	// doc.add(doc.encoding)
+	doc.encoding = &encoding {
+		Type: encodingType,
+		BaseEncoding: "MacRomanEncoding",
+	}
+	doc.add(doc.encoding)
 	doc.catalog = &catalog{
 		Type: catalogType,
 	}
@@ -242,3 +242,4 @@ type standardFontDict struct {
 	BaseFont  name
 	Encoding  name
 }
+
